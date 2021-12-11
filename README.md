@@ -1,41 +1,55 @@
-# Python Data Access
+# Python Data Access - DTO
 This project implements the [DAO pattern](http://www.corej2eepatterns.com/DataAccessObject.htm) as a way to practice data access with Python. It uses the _MySQL Connector_ [MySQL driver](https://www.w3schools.com/python/python_mysql_getstarted.asp) for basic MySQL data access.
 
-This branch features a basic implementation full of issues, which I plan to address in other branches.
+This branch solves an issue pointed out in the main branch: **the lack of a consistent [data transfer object](http://www.corej2eepatterns.com/TransferObject.htm) (DTO) to enable data in and out of DAOs**.
 
-## Project Overview
+If you want to understand this project, please check the [`main` branch](https://github.com/gabrielcostasilva/python-data-access) first.
 
-<img src="./pics/Schema.png" />
+## The Problem
+The original [DAO pattern](http://www.corej2eepatterns.com/DataAccessObject.htm) describes a [DTO](http://www.corej2eepatterns.com/TransferObject.htm) to transfering data between objects. A DTO is a simple object that groups data, i.e. attributes. It turns out that the project in the `main` branch does not use DTOs - at least, not as expected.
 
-There are two tables, `city` and `customer`. Each table has an `id` as its unique identifiers. `id`s are _auto incremented_. In addition, each table has a `name` field that identifies the item name. `name` fields have a constraint that impedes name length less than 2 characters long. In addition, `name`s cannot be `null`. The `city_name` must be unique. One can check script details in `./db-scripts`.
+Python uses dictionaries (`dict`) data type for representing key-value data structures. In Java and JS, we tend to use objects to represent the same kind of structure that are represented by `dict` in Python.
 
-There is a _one-to-many_ relationship between `city` and `customer`. This relationship impedes deleting a `city` used by a `customer`. This relationship also implies that a `customer` carries a `city`.
+The original project in the `main` branch used `dict` and `tuples` for representing data. `tuples` are the default data type returned by the _MySQL Connector_ driver. The problem of using `dict` or `tuples` for transporting data is that they do not allow a strict definition of data at compile time. 
 
-## The DAO Pattern
-The DAO pattern decouples the application and the data store, increasing the application portability. 
+See the example using `dict`:
+```
+dao.create({"city_name": "Londrina"})
+```
 
-Each persistent entity (tables, in our example) should have a respective DAO class with tradicional CRUD methods: Create, Read (single and all), Update and Delete. 
+Now, see the same example using an object:
 
-<img src="./pics/DAODiagram.png" />
+```
+dao.create(City(1, "Londrina"))
+```
+An object forces setting required attributes, otherwise it raises errors. For example: 
+```
+dao.create(City(1, "Londrina", "PR"))
+```
+This last code snippet would raise: `TypeError: __init__() takes 3 positional arguments but 4 were given`. In addition, by using an object you benefit from methods that validate entries, format printing, enable comparison and sorting, for instance.
 
-The Figure above represents the relationship we have in our code. Each DAO groups possible CRUD operations for `customer` and `city` as follows:
+## The Solution
+I found at least three possible solutions to implementing a DTO in Python. The first is using a simple class, of course. The second uses third-party libraries, such as [Pydantic](https://pydantic-docs.helpmanual.io) or [attr](https://www.attrs.org/en/stable/). But, the third solution seems to be to right way to go: [dataclasses](https://www.youtube.com/watch?v=vRVVyl9uaZc).
 
-* `CityDAO` enables creating, reading, updating and deleting cities in a database. Each method implements MySQL Connector functions for accessing a MySQL database;
+A `dataclass` is similar to a Java `record`. Therefore, all you have to do is to set the attributes and all the boilerplate is automatically done for you. See the example of the `City dataclass` below.
 
-* `CustomerDAO` is similar to `CityDAO`, it enables creating, reading, updating and deleting customers in a database. However, a `customer` has a relationship with `city` as a _customer lives in a city_. Therefore, each `customer` retrieved from the database also carries a key (`city_id`) to a `city`. Retrieving a `customer` requires retrieving the appropriate `city` by using the `CityDAO`, which sets the relationship between the two classes.
+```
+from dataclasses import dataclass
 
-## Issues
-Although this project is a valid implementation of DAO pattern, this branch has several issues:
+@dataclass
+class City:
+    id: int
+    name: str
+```
 
-* It lacks unit tests;
-* It lacks a consistent [data transfer object](http://www.corej2eepatterns.com/TransferObject.htm) (DTO) to enable data in and out of DAOs;
-* It opens a new connection each time a DAO is instantiated;
-* It repeats itself a lot!
-* It requires setting the entire environment by hand - no automation!
-* The project is tied to MySQL database;
+The change in the `DAO` classes was minimal, as you can check by examining the commit in this branch.
 
-I hope to address these issues in the future. Checkout this project branches to see improvements.
+## The Cost
+This solution comes to a cost though: as any reuse strategy, it inherits [benefits and drawbacks](https://www.slideshare.net/software-engineering-book/ch15-software-reuse). We highlight two drawbacks that you should be aware of, although they worth it. First, our code grew due to the addition of `dataclass`es. As we have two entities (represented by two tables), we need two new classes. 
 
-## Project Setup
+Next, coupling also increased, as the Figure below shows. Now, `CustomerDAO` uses both `Customer` and `City`, as a `Customer` carries a `City`. `Customer` and `City` dataclasses are also coupled.
 
-You need Python 3 and the MySQL Connector driver. You also need MySQL installed (or a docker container with MySQL). Run scripts in `./db-scripts` folder to set up the basic schema. Finally, run the code to checkout the DAO working.
+<img src="./pics/DataclassDiagram.png" />
+
+## Warning
+For some reason, the `dataclasses` module was unavailable in my system. So, I had to install it with `pip`.

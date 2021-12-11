@@ -1,4 +1,5 @@
 import mysql.connector
+from City import City
 
 class CityDAO:
 
@@ -13,18 +14,20 @@ class CityDAO:
     def read(self, id: int):
         mycursor = self.connection.cursor()
         mycursor.execute("SELECT * FROM city WHERE id = %s", (id, ))
-        return mycursor.fetchone()
+        city_id, city_name = mycursor.fetchone()
+        return City(city_id, city_name)
 
     def readAll(self) -> list:
         mycursor = self.connection.cursor()
         mycursor.execute("SELECT * FROM city")
-        return mycursor.fetchall()
+        
+        return [City(a_city[0], a_city[1]) for a_city in mycursor.fetchall()]
 
     def create(self, entity) -> int:
         mycursor = self.connection.cursor()
 
         sql = "INSERT INTO city (city_name) VALUES (%s)"
-        val = (entity["city_name"], )
+        val = (entity.name, )
 
         try:
             mycursor.execute(sql, val)
@@ -43,7 +46,7 @@ class CityDAO:
         mycursor = self.connection.cursor()
 
         sql = "UPDATE city SET city_name = %s WHERE id = %s"
-        val = (entity["city_name"], entity["id"])
+        val = (entity.name, entity.id)
 
         try:
             mycursor.execute(sql, val)
@@ -77,11 +80,11 @@ class CityDAO:
 def main():
     dao = CityDAO()
     # print(dao.readAll())
-    # print(dao.create({"city_name": ""}))
+    # print(dao.create(City(1, "Londrina")))
     # print(dao.create({"city_name": "Londrina"}))
-    # print(dao.update({"city_name": "", "id": 1}))
-    print(dao.delete(2))
-    # print(dao.read(2))
+    # print(dao.update(City(1, "Maringá")))
+    # print(dao.delete(2))
+    # print(dao.read(1))
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 import mysql.connector
 from CityDAO import CityDAO
-
+from Customer import Customer
+from City import City
 
 class CustomerDAO:
 
@@ -20,9 +21,8 @@ class CustomerDAO:
 
         cityDAO = CityDAO()
         a_city = cityDAO.read(raw_customer[2])
-        
-        customer = {"id": raw_customer[0], "customer_name": raw_customer[1], "city": {
-                             "id": a_city[0], "city_name": a_city[1]}}
+
+        customer = Customer(raw_customer[0], raw_customer[1], City(a_city.id, a_city.name))
             
         return customer
 
@@ -36,8 +36,7 @@ class CustomerDAO:
         cityDAO = CityDAO()
         for a_customer in raw_customers:
             a_city = cityDAO.read(a_customer[2])
-            customers.append({"id": a_customer[0], "customer_name": a_customer[1], "city": {
-                             "id": a_city[0], "city_name": a_city[1]}})
+            customers.append(Customer(a_customer[0], a_customer[1], City(a_city.id, a_city.name)))
             
         return customers
 
@@ -45,7 +44,7 @@ class CustomerDAO:
         mycursor = self.connection.cursor()
 
         sql = "INSERT INTO customer (customer_name, city_id) VALUES (%s, %s)"
-        val = (entity["customer_name"], entity["city_id"])
+        val = (entity.name, entity.city.id)
 
         try:
             mycursor.execute(sql, val)
@@ -61,7 +60,7 @@ class CustomerDAO:
         mycursor = self.connection.cursor()
 
         sql = "UPDATE customer SET customer_name = %s, city_id = %s WHERE id = %s"
-        val = (entity["customer_name"], entity["city_id"], entity["id"])
+        val = (entity.name, entity.city.id, entity.id)
 
         try:
             mycursor.execute(sql, val)
@@ -91,12 +90,12 @@ class CustomerDAO:
 
 def main():
     dao = CustomerDAO()
-    # print(dao.readAll())
-    # print(dao.create({"city_name": ""}))
+    print(dao.readAll())
+    # print(dao.create(Customer(1, "John Doe", City(1, "Maringá"))))
     # print(dao.create({"city_name": "Londrina"}))
-    # print(dao.update({"city_name": "", "id": 1}))
+    # print(dao.update(Customer(1, "Anna Doe", City(2, "Londrina"))))
     # print(dao.delete(0))
-    print(dao.read(1))
+    # print(dao.read(1))
 
 
 if __name__ == "__main__":
