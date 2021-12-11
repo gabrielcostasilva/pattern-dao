@@ -27,8 +27,8 @@ The Figure above represents the relationship we have in our code. Each DAO group
 ## Issues
 Although this project is a valid implementation of DAO pattern, this branch has several issues:
 
+* ~~It lacks a consistent [data transfer object](http://www.corej2eepatterns.com/TransferObject.htm) (DTO) to enable data in and out of DAOs;~~ - checkout branch [dto](https://github.com/gabrielcostasilva/python-data-access/tree/dto)
 * It lacks unit tests;
-* It lacks a consistent [data transfer object](http://www.corej2eepatterns.com/TransferObject.htm) (DTO) to enable data in and out of DAOs;
 * It opens a new connection each time a DAO is instantiated;
 * It repeats itself a lot!
 * It requires setting the entire environment by hand - no automation!
