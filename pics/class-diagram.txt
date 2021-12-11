@@ -1,0 +1,1 @@
+[CustomerDAO|create(entity): int;read(int);readAll():list;update(entity);delete(int)]-uses>[CityDAO|create(entity): int;read(int);readAll():list;update(entity);delete(int)]
