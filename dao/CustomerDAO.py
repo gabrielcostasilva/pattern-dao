@@ -55,7 +55,7 @@ class CustomerDAO:
             if error.msg.startswith("Check constraint"):
                 print("Customer name must be between 2 and 255 characters long")
 
-        return mycursor.rowcount
+        return mycursor.lastrowid
 
     def update(self, entity) -> int:
         mycursor = self.connection.cursor()
