@@ -22,7 +22,7 @@ class CustomerDAO:
         cityDAO = CityDAO()
         a_city = cityDAO.read(raw_customer[2])
 
-        customer = Customer(raw_customer[0], raw_customer[1], City(a_city.id, a_city.name))
+        customer = Customer(raw_customer[1], City(a_city.id, a_city.name), raw_customer[0])
             
         return customer
 
