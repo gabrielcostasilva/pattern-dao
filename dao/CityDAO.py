@@ -1,6 +1,7 @@
 import mysql.connector
 from City import City
 
+
 class CityDAO:
 
     def __init__(self):
@@ -13,14 +14,14 @@ class CityDAO:
 
     def read(self, id: int):
         mycursor = self.connection.cursor()
-        mycursor.execute("SELECT * FROM city WHERE id = %s", (id, ))
+        mycursor.execute("SELECT * FROM city WHERE id = %s", (id,))
         city_id, city_name = mycursor.fetchone()
-        return City(city_id, city_name)
+        return City(city_name, city_id)
 
     def readAll(self) -> list:
         mycursor = self.connection.cursor()
         mycursor.execute("SELECT * FROM city")
-        
+
         return [City(a_city[0], a_city[1]) for a_city in mycursor.fetchall()]
 
     def create(self, entity) -> int:
@@ -65,12 +66,12 @@ class CityDAO:
         mycursor = self.connection.cursor()
 
         sql = "DELETE FROM city WHERE id = %s"
-        adr = (id, )
-        
+        adr = (id,)
+
         try:
             mycursor.execute(sql, adr)
             self.connection.commit()
-            
+
         except mysql.connector.errors.IntegrityError:
             print("City cannot be deleted because there is a customer using it!")
 
