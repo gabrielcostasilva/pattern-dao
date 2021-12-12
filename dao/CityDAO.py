@@ -76,17 +76,3 @@ class CityDAO:
             print("City cannot be deleted because there is a customer using it!")
 
         return mycursor.rowcount
-
-
-def main():
-    dao = CityDAO()
-    # print(dao.readAll())
-    # print(dao.create(City(1, "Londrina")))
-    # print(dao.create({"city_name": "Londrina"}))
-    # print(dao.update(City(1, "Maringá")))
-    # print(dao.delete(2))
-    # print(dao.read(1))
-
-
-if __name__ == "__main__":
-    main()

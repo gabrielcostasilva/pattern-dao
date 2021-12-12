@@ -86,17 +86,3 @@ class CustomerDAO:
             print("Customer cannot be deleted because there is a customer using it!")
 
         return mycursor.rowcount
-
-
-def main():
-    dao = CustomerDAO()
-    print(dao.readAll())
-    # print(dao.create(Customer(1, "John Doe", City(1, "Maringá"))))
-    # print(dao.create({"city_name": "Londrina"}))
-    # print(dao.update(Customer(1, "Anna Doe", City(2, "Londrina"))))
-    # print(dao.delete(0))
-    # print(dao.read(1))
-
-
-if __name__ == "__main__":
-    main()
