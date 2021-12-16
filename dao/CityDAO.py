@@ -1,78 +1,28 @@
-import mysql.connector
 from City import City
+from dao.AbstractDAO import AbstractDAO
 
 
-class CityDAO:
+class CityDAO(AbstractDAO):
 
-    def __init__(self):
-        self.connection = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="admin",
-            database="mydatabase"
-        )
+    def get_main_table_name(self):
+        return "city"
 
-    def read(self, id: int):
-        mycursor = self.connection.cursor()
-        mycursor.execute("SELECT * FROM city WHERE id = %s", (id,))
-        city_id, city_name = mycursor.fetchone()
+    def fetch_single_entity(self, cursor):
+        city_id, city_name = cursor.fetchone()
         return City(city_name, city_id)
 
-    def readAll(self) -> list:
-        mycursor = self.connection.cursor()
-        mycursor.execute("SELECT * FROM city")
+    def fetch_many_entities(self, cursor):
+        result = [City(a_city[0], a_city[1]) for a_city in cursor.fetchall()]
+        return result
 
-        return [City(a_city[0], a_city[1]) for a_city in mycursor.fetchall()]
+    def get_sql_insert_string(self):
+        return "INSERT INTO city (city_name) VALUES (%s)"
 
-    def create(self, entity) -> int:
-        mycursor = self.connection.cursor()
+    def get_entity_attrs_for_insert(self, entity):
+        return (entity.name, )
 
-        sql = "INSERT INTO city (city_name) VALUES (%s)"
-        val = (entity.name, )
+    def get_sql_update_string(self):
+        return "UPDATE city SET city_name = %s WHERE id = %s"
 
-        try:
-            mycursor.execute(sql, val)
-            self.connection.commit()
-
-        except mysql.connector.errors.IntegrityError:
-            print("City already exists!")
-
-        except mysql.connector.errors.DatabaseError as error:
-            if error.msg.startswith("Check constraint"):
-                print("City name must be between 2 and 255 characters long")
-
-        return mycursor.lastrowid
-
-    def update(self, entity) -> int:
-        mycursor = self.connection.cursor()
-
-        sql = "UPDATE city SET city_name = %s WHERE id = %s"
-        val = (entity.name, entity.id)
-
-        try:
-            mycursor.execute(sql, val)
-            self.connection.commit()
-
-        except mysql.connector.errors.IntegrityError:
-            print("City already exists!")
-
-        except mysql.connector.errors.DatabaseError as error:
-            if error.msg.startswith("Check constraint"):
-                print("City name must be between 2 and 255 characters long")
-
-        return mycursor.rowcount
-
-    def delete(self, id: int) -> bool:
-        mycursor = self.connection.cursor()
-
-        sql = "DELETE FROM city WHERE id = %s"
-        adr = (id,)
-
-        try:
-            mycursor.execute(sql, adr)
-            self.connection.commit()
-
-        except mysql.connector.errors.IntegrityError:
-            print("City cannot be deleted because there is a customer using it!")
-
-        return mycursor.rowcount
+    def get_entity_attrs_for_update(self, entity):
+        return (entity.name, entity.id)

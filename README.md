@@ -1,30 +1,30 @@
-# Python Data Access - Unit Tests
+# Python Data Access - Template Method
 This project implements the [DAO pattern](http://www.corej2eepatterns.com/DataAccessObject.htm) as a way to practice data access with Python. It uses the _MySQL Connector_ [MySQL driver](https://www.w3schools.com/python/python_mysql_getstarted.asp) for basic MySQL data access.
 
-This branch solves an issue pointed out in the `main` branch: **the lack of unit tests**.
+This branch solves an issue pointed out in the `main` branch: **It repeats itself a lot!**.
 
 If you want to understand this project, please check the [`main` branch](https://github.com/gabrielcostasilva/python-data-access) first.
 
 ## The Problem
-In the original code, each DAO class has a `main` method that 'tests' the code. A unit test uses _assertions_ in a set of controlled procedures to show that the tested code works as expected.
-
-Unit tests are considered a good programming practice. Moreover, unit tests give you confidence for changing your code. If your tests fail after a change, you _know_ your change broke the code.
-
-_Notice that the lack of tests in the original project is prompted due to my lack of Python skills. This project evolves as I learn Python tools, techniques and features._
+In the original code, each DAO implements CRUD methods to manage data in a database. As a result, each DAO repeats code systematically. This is sufficient to create a lot of useless repetition.  
 
 ## The Solution
-The solution is creating unit tests by using a library or framework. The `unittest` module is a vanilla Python solution for unit testing. We followed [Socratica's tutorial](https://www.youtube.com/watch?v=1Lfv5tUGsn8) to implement unit tests in this project.
+The [Template Design Pattern](https://refactoring.guru/design-patterns/template-method) decreases code repetition by setting a _template_ that is shared by all DAOs through inheritance.
 
-We created two test classes - one for each DAO. Test classes extend `unittest.TestCase`. Each method in these classes tests a feature.
+The `AbstractDAO` class creates the traditional DAO structure (_template_) with CRUD methods. However, the class leaves the entity-specific parts of code open for change. This is done by overriding _abstract methods_.
 
-We tested the five CRUD methods for expected results, i.e. that the `create()` creates, the `update()` updates, etc. In addition, we tested exceptions, like when you try to add an already existing city. 
+For instance, reading data requires a SQL query string with the table name, like so:
+```
+mycursor.execute(f"SELECT * FROM {self.get_main_table_name()} WHERE id = %s", (id,))
+```
+In the example above, we replace the table name in the SQL query string with a call to `get_main_table_name()`, which is an abstract method. This method is implemented in each DAO subclass, completing the code. See an example in the `CityDAO` class:
+```
+def get_main_table_name(self):
+    return "city"
+```
 
 ## The Cost
-Creating tests increases coding effort, but it pays off when your code evolves. I am a particular fan of [test-driven development](https://www.youtube.com/watch?v=DD1fEhcEzY8), but that is really hard to do when one has little knowledge in the technology. 
-
-Notice that our tests do not sanitise the database after creating, updating, etc. Therefore, you must use a test database.
+Although the code is easier to change as the main code is centralised in one single place (the `AbstractDAO` class), it increases the number of LoC. 
 
 ## Warning
-Our unit tests are hitting the database. Therefore, this strategy requires a test database. One possible alternative is using [test containers](https://www.youtube.com/watch?v=v3eQCIWLYOw).
-
-Another solution is using mocks, but they could hide issues in the DAO. 
+Our implementation does not eliminate code repetition completely. For instance, the process for retrieving entity data must be implemented in each DAO class. 
