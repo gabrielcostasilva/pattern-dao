@@ -29,15 +29,16 @@ Although this project is a valid implementation of DAO pattern, this branch has 
 
 * ~~It lacks a consistent [data transfer object](http://www.corej2eepatterns.com/TransferObject.htm) (DTO) to enable data in and out of DAOs;~~ - checkout branch [dto](https://github.com/gabrielcostasilva/python-data-access/tree/dto)
 * ~~It lacks unit tests;~~ - check out branch [unit-test](https://github.com/gabrielcostasilva/python-data-access/tree/unit-test)
+* ~~It repeats itself a lot!~~ - checkout branch [template](https://github.com/gabrielcostasilva/python-data-access/tree/template)
+* DAO classes are responsible for populating dataclasses data;
+* DAO methods does not return objects;
+* Dataclasses are not immutable;
+* UI and internal concerns are tangled;
 * It opens a new connection each time a DAO is instantiated;
-* It repeats itself a lot!
 * It requires setting the entire environment by hand - no automation!
 * The project is tied to MySQL database;
-* DAO methods does not return objects;
 * Data types are not enforced;
-* Dataclasses are not immutable;
 * It lacks logging;
-* UI and internal concerns are tangled;
 * Mocks or testcontainers could improve tests.
 
 **Notice that** these issues and their resolution in other branches in this repository follow the order in which they are presented in the list above.
