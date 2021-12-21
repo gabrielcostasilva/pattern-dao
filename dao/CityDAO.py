@@ -7,13 +7,8 @@ class CityDAO(AbstractDAO):
     def get_main_table_name(self):
         return "city"
 
-    def fetch_single_entity(self, cursor):
-        city_id, city_name = cursor.fetchone()
-        return City(city_name, city_id)
-
-    def fetch_many_entities(self, cursor):
-        result = [City(a_city[0], a_city[1]) for a_city in cursor.fetchall()]
-        return result
+    def get_entity(self):
+        return City()
 
     def get_sql_insert_string(self):
         return "INSERT INTO city (city_name) VALUES (%s)"

@@ -18,11 +18,7 @@ class AbstractDAO(ABC):
         pass
 
     @abstractmethod
-    def fetch_single_entity(self, cursor):
-        pass
-
-    @abstractmethod
-    def fetch_many_entities(self, cursor):
+    def get_entity(self):
         pass
 
     @abstractmethod
@@ -44,13 +40,13 @@ class AbstractDAO(ABC):
     def read(self, id: int):
         mycursor = self.connection.cursor()
         mycursor.execute(f"SELECT * FROM {self.get_main_table_name()} WHERE id = %s", (id,))
-        return self.fetch_single_entity(mycursor)
+        return self.get_entity().value_of(mycursor)
 
     def readAll(self) -> list:
         mycursor = self.connection.cursor()
         mycursor.execute(f"SELECT * FROM {self.get_main_table_name()}")
 
-        return self.fetch_many_entities(mycursor)
+        return self.get_entity().of(mycursor)
 
     def create(self, entity) -> int:
         mycursor = self.connection.cursor()

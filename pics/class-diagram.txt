@@ -6,3 +6,8 @@
 [CustomerDAO]->[CityDAO]
 [Customer]->[City]
 
+[CustomerDAO]->[Customer]
+[CustomerDAO]->[City]
+[CityDAO]->[City]
+[Customer]->[City]
+[Customer]->[CityDAO]
