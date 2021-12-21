@@ -30,7 +30,8 @@ Although this project is a valid implementation of DAO pattern, this branch has 
 * ~~It lacks a consistent [data transfer object](http://www.corej2eepatterns.com/TransferObject.htm) (DTO) to enable data in and out of DAOs;~~ - checkout branch [dto](https://github.com/gabrielcostasilva/python-data-access/tree/dto)
 * ~~It lacks unit tests;~~ - check out branch [unit-test](https://github.com/gabrielcostasilva/python-data-access/tree/unit-test)
 * ~~It repeats itself a lot!~~ - checkout branch [template](https://github.com/gabrielcostasilva/python-data-access/tree/template)
-* DAO classes are responsible for populating dataclasses data;
+* ~~DAO classes are responsible for populating dataclasses data;~~ - checkout branch [dto-transfer](https://github.com/gabrielcostasilva/python-data-access/tree/dto-transfer) 
+* Poor exception handling;
 * DAO methods does not return objects;
 * Dataclasses are not immutable;
 * UI and internal concerns are tangled;
