@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from City import City
 from CityDAO import CityDAO
 
-@dataclass
+@dataclass(frozen=True)
 class Customer:
     name: str = ""
     city: City = City("")
