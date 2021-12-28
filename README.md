@@ -31,9 +31,9 @@ Although this project is a valid implementation of DAO pattern, this branch has 
 * ~~It lacks unit tests;~~ - check out branch [unit-test](https://github.com/gabrielcostasilva/python-data-access/tree/unit-test)
 * ~~It repeats itself a lot!~~ - checkout branch [template](https://github.com/gabrielcostasilva/python-data-access/tree/template)
 * ~~DAO classes are responsible for populating dataclasses data;~~ - checkout branch [dto-transfer](https://github.com/gabrielcostasilva/python-data-access/tree/dto-transfer) 
+* ~~Dataclasses are not immutable;~~ - checkout branch [immutable](https://github.com/gabrielcostasilva/python-data-access/tree/immutable)
 * Poor exception handling;
 * DAO methods does not return objects;
-* Dataclasses are not immutable;
 * UI and internal concerns are tangled;
 * It opens a new connection each time a DAO is instantiated;
 * It requires setting the entire environment by hand - no automation!
