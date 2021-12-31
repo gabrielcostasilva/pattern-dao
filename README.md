@@ -61,6 +61,8 @@ INFO 2021-12-31 14:35:12,516 - Creating operation for City(name='Corn√©lio Proc√
 INFO 2021-12-31 14:35:12,517 - Updating operation called for City(name='', id=33)
 ```
 
+Notice that by adding logging, we also separated UI related concerns, such as `print` to the console. This was another issue pointed out in the [`main` branch](https://github.com/gabrielcostasilva/python-data-access).
+
 ## The Cost
 As this project uses the _template method_ design pattern, the cost of introducing logging is low even if we have many DAOs . 
 
